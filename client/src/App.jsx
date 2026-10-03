@@ -16,8 +16,6 @@ import Attendance from "./pages/admin/Attendance.jsx";
 import Admins from "./pages/admin/Admins.jsx";
 import Join from "./pages/public/Join.jsx";
 import Ai from "./pages/admin/Ai.jsx";
-import Live from "./pages/admin/Live.jsx";
-import Projects from "./pages/admin/Projects.jsx";
 import { DialogHost } from "./components/Dialog.jsx";
 
 function Protected({ children }) {
@@ -53,8 +51,6 @@ export default function App() {
         <Route path="attendance" element={<Attendance />} />
         <Route path="team" element={<Admins />} />
         <Route path="ai" element={<Ai />} />
-        <Route path="live" element={<Live />} />
-        <Route path="projects" element={<Projects />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

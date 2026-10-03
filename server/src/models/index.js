@@ -23,11 +23,6 @@ const Event = mongoose.model(
         quietHoursEnabled: { type: Boolean, default: true },
         sendingPaused: { type: Boolean, default: false },
         waDailyLimit: { type: Number, default: 800 },
-        // during the workshop: WhatsApp messages from registered students go to the live Q&A board
-        liveMode: { type: Boolean, default: false },
-        // after the workshop: project submissions on WhatsApp, scored by AI
-        projectsOpen: { type: Boolean, default: false },
-        projectAutoApprove: { type: Number, default: 6 }, // AI score at or above this is approved automatically; 0 = review every one by hand
       },
     },
     { timestamps: true }
@@ -97,10 +92,6 @@ const Registration = mongoose.model(
       confirmedYesAt: Date,
       attendedAt: Date,
       joinToken: String,
-      // live quiz points during the workshop
-      livePoints: { type: Number, default: 0 },
-      // the project they submitted after the workshop (latest decision)
-      project: { submissionId: Schema.Types.ObjectId, score: Number, status: String, verifiedAt: Date },
     },
     { timestamps: true }
   ).index({ eventId: 1, phone: 1 }, { unique: true })
@@ -334,7 +325,6 @@ const AiConfig = mongoose.model(
       monthlyBudgetInr: { type: Number, default: 0 },
       limitsV2: { type: Boolean, default: false },
       kbSeeded: { type: Boolean, default: false },
-      kbLiveSeeded: { type: Boolean, default: false }, // quiz + project answers added once
       usdPerMInput: { type: Number, default: 0.25 },
       usdPerMOutput: { type: Number, default: 1.5 },
       usdToInr: { type: Number, default: 88 },
@@ -395,90 +385,7 @@ const WaContext = mongoose.model(
   new Schema({ waId: { type: String, unique: true }, menu: String, expiresAt: { type: Date, expires: 0 } })
 );
 
-// ---------- live session ----------
-// A quiz question (has a correct option) or a poll (no correct option). Students answer by replying 1-4 on WhatsApp.
-const LivePoll = mongoose.model(
-  "LivePoll",
-  new Schema(
-    {
-      question: String,
-      options: [String],
-      correct: { type: Number, default: null }, // index into options; null = poll
-      timeLimitSec: { type: Number, default: 30 },
-      status: { type: String, enum: ["draft", "live", "closed"], default: "draft" },
-      order: { type: Number, default: 0 },
-      openedAt: Date,
-      closedAt: Date,
-    },
-    { timestamps: true }
-  )
-);
-
-const LiveAnswer = mongoose.model(
-  "LiveAnswer",
-  new Schema(
-    {
-      pollId: { type: Schema.Types.ObjectId, index: true },
-      regId: Schema.Types.ObjectId,
-      name: String,
-      college: String,
-      choice: Number,
-      correct: Boolean,
-      points: { type: Number, default: 0 },
-      ms: Number,
-    },
-    { timestamps: true }
-  ).index({ pollId: 1, regId: 1 }, { unique: true })
-);
-
-const LiveQuestion = mongoose.model(
-  "LiveQuestion",
-  new Schema(
-    {
-      regId: Schema.Types.ObjectId,
-      name: String,
-      college: String,
-      text: String,
-      status: { type: String, enum: ["new", "answered", "hidden"], default: "new" },
-      pinned: { type: Boolean, default: false },
-    },
-    { timestamps: true }
-  )
-);
-
-// ---------- project submissions ----------
-const ProjectSubmission = mongoose.model(
-  "ProjectSubmission",
-  new Schema(
-    {
-      regId: { type: Schema.Types.ObjectId, index: true },
-      waId: String,
-      name: String,
-      college: String,
-      link: String,
-      note: String,
-      imageFile: String, // in the uploads folder
-      imageMime: String,
-      status: { type: String, enum: ["evaluating", "evaluated", "approved", "rejected", "error"], default: "evaluating" },
-      ai: {
-        isProject: Boolean,
-        works: Number, // 0-4
-        usesAi: Number, // 0-3
-        effort: Number, // 0-3
-        score: Number, // 0-10
-        summary: String,
-        feedback: String,
-      },
-      error: String,
-      reviewedBy: String,
-      reviewedAt: Date,
-    },
-    { timestamps: true }
-  )
-);
-
 module.exports = {
-  LivePoll, LiveAnswer, LiveQuestion, ProjectSubmission,
   WaContext,
   Media, KnowledgeEntry, AiConfig, AiUsage, AiHandoff, AiCache, AiTurn,
   OtpCode,

@@ -6,7 +6,6 @@ import { useSocketEvent, useToast } from "../../components/ui.jsx";
 const NAV = [
   { items: [["/admin", "Overview", true]] },
   { title: "People", items: [["/admin/registrations", "Registrations"], ["/admin/attendance", "Attendance & certificates"]] },
-  { title: "Workshop", items: [["/admin/live", "Live session"], ["/admin/projects", "Projects"]] },
   { title: "Growth", items: [["/admin/links", "Campaign links"]] },
   { title: "Messaging", items: [["/admin/announcements", "Announcements"], ["/admin/groups", "Group broadcast"], ["/admin/inbox", "WhatsApp inbox"], ["/admin/ai", "AI assistant"], ["/admin/automations", "Automations"]] },
   { title: "Setup", items: [["/admin/form", "Form builder"], ["/admin/settings", "Settings"], ["/admin/team", "Team", false, "owner"]] },

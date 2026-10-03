@@ -6,22 +6,8 @@ const runtime = require("../runtime");
 const flow = require("./flow");
 const { answerOnWhatsApp } = require("./aiReply");
 const intents = require("./intents");
-const liveSvc = require("../services/live.service");
-const projects = require("../services/project.service");
 
 const takeover = new Set(); // chats an admin is handling manually
-
-// A reaction on the student's own message: an answer is acknowledged without sending a new message.
-const react = (msg, emoji) => (typeof msg.react === "function" ? msg.react(emoji).catch(() => {}) : null);
-
-async function readImage(msg) {
-  try {
-    const m = await msg.downloadMedia();
-    return m && m.data ? { mime: m.mimetype, base64: m.data } : null;
-  } catch (_) {
-    return null;
-  }
-}
 
 const send = (waId, body) => enqueue({ chatId: waId, body, related: "bot" }).catch(() => {});
 
@@ -89,31 +75,7 @@ async function handle(msg) {
     return runAction("register", ctx);
   }
 
-  // ---------- after the workshop: project submissions ----------
-  if (live && /^(SUBMIT|PROJECT|SUBMIT PROJECT|MY PROJECT)$/.test(upper)) {
-    if (!event.settings.projectsOpen) return send(waId, "Project submissions open after the workshop. We'll message you here when they do. 🙂");
-    await intents.setMenu(intents.keyFor(reg, waId), "project");
-    return send(waId, "Send your project here 👇\n• a GitHub, Colab, Hugging Face or demo *link*, or\n• a *screenshot* of it working\nAdd one line about what it does in the same message.");
-  }
-  // while submissions are open, a link or a photo from a registered student is their project
-  if (live && event.settings.projectsOpen && (isImage || projects.hasLink(text))) {
-    const image = isImage ? await readImage(msg) : null;
-    if (isImage && !image) return send(waId, "Sorry, I couldn't open that photo. Please send it again.");
-    await intents.clearMenu(intents.keyFor(reg, waId));
-    return projects.submit(live, { text, image });
-  }
-  if (isImage) return; // other photos: nothing to do (a person can see them in the inbox)
-
-  // ---------- during the workshop: quiz answers and live Q&A ----------
-  if (live && num !== null) {
-    const poll = await liveSvc.activePoll();
-    if (poll) return react(msg, await liveSvc.answer(poll, live, num));
-  }
-  // "ok", "thanks", "hi" aren't questions for the trainer
-  if (live && event.settings.liveMode && !word && num === null && (text.includes("?") || text.split(/\s+/).length >= 3)) {
-    await liveSvc.addQuestion(live, text);
-    return react(msg, "🙋");
-  }
+  if (isImage) return; // photos: nothing to do (a person can see them in the inbox)
 
   if (!session) {
     // a bare number means whatever the last menu we sent said

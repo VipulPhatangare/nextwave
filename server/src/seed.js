@@ -50,14 +50,6 @@ Tap to join, {{name}}:
 You completed *{{event_name}}*. Your certificate is attached.
 
 Post it on LinkedIn with what you built. It's a great first AI project for your resume 🚀`,
-  PROJECT_INVITE: `🛠️ *Show us what you built, {{name}}!*
-
-Reply here with your project:
-• a GitHub, Colab, Hugging Face or demo *link*, or
-• a *screenshot* of it working
-Add one line about what it does.
-
-Our AI reviewer sends feedback in a minute, and verified projects get *"Project verified"* on the certificate 🎓`,
 };
 
 // Email: plain text with *bold*; email.service turns it into the branded HTML layout
@@ -244,12 +236,6 @@ const KNOWLEDGE = [
   { title: "How do you use my phone number?", content: "Only for workshop updates on WhatsApp and email. Reply STOP any time to stop them.", tags: ["privacy"] },
 ];
 
-// Added once for databases created before the live quiz and project review existed.
-const LIVE_KNOWLEDGE = [
-  { title: "How do the quizzes during the workshop work?", content: "During the session the trainer shows quick quiz questions on screen. Answer by replying here on WhatsApp with the option number (1, 2, 3 or 4). Your first answer counts, and faster correct answers earn more points on the live leaderboard.", tags: ["quiz", "live"] },
-  { title: "How do I submit my project?", content: "After the workshop, send your project here on WhatsApp: a GitHub, Colab, Hugging Face or demo link, or a screenshot of it working, with one line about what it does. An AI reviewer replies with a score and feedback, and verified projects get 'Project verified' on the certificate.", tags: ["project", "certificate"] },
-];
-
 // Starter answers that mentioned typing YES / JOIN. Upgraded only if still unedited.
 const OLD_KNOWLEDGE = {
   "How do I register?": "Reply JOIN here on WhatsApp, or use the registration page. It takes under a minute: your name, college and, if you like, your email.",
@@ -324,13 +310,6 @@ async function seed() {
     aiCfg.kbSeeded = true;
     await aiCfg.save();
   }
-  if (!aiCfg.kbLiveSeeded) {
-    for (const k of LIVE_KNOWLEDGE) {
-      await M.KnowledgeEntry.updateOne({ title: k.title }, { $setOnInsert: { ...k, source: "manual" } }, { upsert: true });
-    }
-    aiCfg.kbLiveSeeded = true;
-    await aiCfg.save();
-  }
   for (const [title, old] of Object.entries(OLD_KNOWLEDGE)) {
     const next = KNOWLEDGE.find((k) => k.title === title).content;
     await M.KnowledgeEntry.updateOne({ title, content: old }, { content: next });
@@ -339,7 +318,7 @@ async function seed() {
   await removeLegacyData();
 }
 
-// Referrals, coupons and payments were removed. Clean up what an older database still holds.
+// Referrals, coupons, payments, the live session and project review were removed. Clean up what an older database still holds.
 async function removeLegacyData() {
   // The unique index on referralCode would reject every new registration (they all have no code).
   await M.Registration.collection.dropIndex("referralCode_1").catch(() => {});
@@ -349,6 +328,15 @@ async function removeLegacyData() {
   await M.Template.deleteMany({ key: { $in: ["REF_PROGRESS", "PAYMENT_LINK"] } });
   await M.Automation.deleteMany({ key: "REF_PROGRESS" });
   for (const name of ["referrals", "rewardrules", "coupons"]) {
+    await M.Event.db.dropCollection(name).catch(() => {});
+  }
+
+  await M.Registration.collection.updateMany({}, { $unset: { livePoints: "", project: "" } });
+  await M.Event.collection.updateMany({}, { $unset: { "settings.liveMode": "", "settings.projectsOpen": "", "settings.projectAutoApprove": "" } });
+  await M.AiConfig.collection.updateMany({}, { $unset: { kbLiveSeeded: "" } });
+  await M.KnowledgeEntry.deleteMany({ title: { $in: ["How do the quizzes during the workshop work?", "How do I submit my project?"] } });
+  await M.Template.deleteMany({ key: "PROJECT_INVITE" });
+  for (const name of ["livepolls", "liveanswers", "livequestions", "projectsubmissions"]) {
     await M.Event.db.dropCollection(name).catch(() => {});
   }
 }

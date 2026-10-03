@@ -34,15 +34,6 @@ function generatePdf(event, reg) {
     doc.fillColor(ORANGE).font("Helvetica-Bold").fontSize(26).text(event.name, 60, 312, { align: "center", width: W - 120 });
     const date = event.startAt ? new Date(event.startAt).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kolkata" }) : "";
     doc.fillColor("#8A8580").font("Helvetica").fontSize(13).text(`and built a working AI project in 60 minutes${date ? " on " + date : ""}.`, 0, 372, { align: "center" });
-    // a project that was submitted after the workshop and approved
-    if (reg.project?.status === "approved") {
-      const label = `PROJECT VERIFIED${typeof reg.project.score === "number" ? `  ·  SCORE ${reg.project.score}/10` : ""}`;
-      doc.font("Helvetica-Bold").fontSize(11);
-      const bw = doc.widthOfString(label, { characterSpacing: 2 }) + 44;
-      doc.roundedRect(W / 2 - bw / 2, 408, bw, 30, 15).lineWidth(1.5).stroke(ORANGE);
-      doc.circle(W / 2 - bw / 2 + 18, 423, 5).fill(ORANGE);
-      doc.fillColor(ORANGE).text(label, W / 2 - bw / 2 + 30, 418, { width: bw - 34, align: "left", characterSpacing: 2, lineBreak: false });
-    }
     if (reg.college) doc.fillColor("#6B665F").fontSize(11).text(reg.college, 0, H - 105, { align: "center" });
     doc.fillColor("#6B665F").fontSize(9).text(`Certificate ID: ${String(reg._id).slice(-8).toUpperCase()}`, 0, H - 80, { align: "center" });
     doc.end();

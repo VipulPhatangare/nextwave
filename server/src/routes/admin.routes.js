@@ -50,7 +50,6 @@ router.get("/me", (req, res) => res.json({ user: req.user }));
 router.use((req, res, next) => (req.method === "GET" ? next() : requireWrite(req, res, next)));
 router.use("/media", require("./media.routes"));
 router.use("/ai", require("./ai.routes"));
-router.use("/", require("./engage.routes")); // live session + projects
 
 // ---------- stats ----------
 router.get(
