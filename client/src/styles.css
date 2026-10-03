@@ -1201,3 +1201,45 @@ select option { background: #121214; color: var(--text); }
 @media (prefers-reduced-motion: reduce) { .dlg-backdrop, .dlg { animation: none; } }
 
 @media (max-width: 560px) { .hide-sm { display: none; } }
+
+/* ---------- /aiworklog (public) ---------- */
+.wl { min-height: 100vh; background: radial-gradient(900px 520px at 100% -10%, rgba(255, 106, 0, 0.16), transparent 60%), var(--black); color: var(--text); padding: 0 16px 48px; }
+.wl a { color: inherit; text-decoration: none; }
+.wl-top { max-width: 980px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 22px 0; flex-wrap: wrap; }
+.wl-brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; color: #fff; font-size: 15px; }
+.wl-mark { width: 8px; height: 26px; border-radius: 3px; background: linear-gradient(180deg, var(--orange-hi), var(--orange-lo)); box-shadow: 0 0 14px rgba(255, 106, 0, 0.5); }
+.wl-kicker { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); padding: 5px 10px; border-radius: 99px; }
+.wl-hero { max-width: 980px; margin: 28px auto 34px; }
+.wl-eyebrow { font-family: "IBM Plex Mono", monospace; font-size: 12px; letter-spacing: 3px; color: var(--orange-hi); margin-bottom: 12px; }
+.wl-hero h1 { font-size: clamp(30px, 5vw, 50px); line-height: 1.08; margin: 0 0 14px; color: #fff; letter-spacing: -0.5px; }
+.wl-hero p { font-size: 17px; line-height: 1.6; color: var(--muted); max-width: 680px; margin: 0; }
+.wl-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+.wl-chips a { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; color: #e8e2da; border: 1px solid var(--line); background: var(--raised); padding: 7px 12px 7px 7px; border-radius: 99px; transition: border-color 0.15s; }
+.wl-chips a:hover { border-color: var(--orange-line); color: #fff; }
+.wl-chips b { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: var(--orange-soft); color: var(--orange-hi); font-size: 12px; }
+.wl-list { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+.wl-card { background: #0e0e10; border: 1px solid var(--line); border-radius: 18px; padding: 24px; scroll-margin-top: 16px; }
+.wl-card-head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; flex-wrap: wrap; }
+.wl-num { font-family: "IBM Plex Mono", monospace; font-size: 22px; font-weight: 700; color: var(--orange); }
+.wl-card-head h2 { margin: 0; font-size: 22px; color: #fff; flex: 1; min-width: 200px; }
+.wl-tag { font-size: 12px; padding: 4px 11px; border-radius: 99px; background: var(--orange-soft); color: var(--orange-hi); border: 1px solid var(--orange-line); white-space: nowrap; }
+.wl-tag.mk { background: rgba(61, 220, 151, 0.1); color: var(--good); border-color: rgba(61, 220, 151, 0.3); }
+.wl-flow { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 720px) { .wl-flow { grid-template-columns: 1fr; } .wl-card { padding: 18px; } }
+.wl-step { position: relative; border-radius: 12px; padding: 14px 16px; background: var(--raised); border: 1px solid var(--line); min-width: 0; }
+.wl-step-label { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.wl-step-body { font-size: 14.5px; line-height: 1.6; color: #e8e2da; overflow-wrap: anywhere; }
+.wl-step-body p { margin: 0; }
+.wl-step-body ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.wl-quote { font-style: italic; color: #fff; }
+.wl-step.ai .wl-step-body { color: var(--muted); }
+.wl-step.change { border-left: 3px solid var(--warn); }
+.wl-step.change .wl-step-label { color: var(--warn); }
+.wl-step.final { border-color: var(--orange-line); background: linear-gradient(180deg, rgba(255, 106, 0, 0.12), rgba(255, 106, 0, 0.03)); }
+.wl-step.final .wl-step-label { color: var(--orange-hi); }
+.wl-step.final .wl-step-body { color: #fff; }
+.wl-rule { max-width: 980px; margin: 24px auto 0; border: 1px solid var(--orange-line); background: var(--orange-soft); border-radius: 16px; padding: 18px 22px; }
+.wl-rule p { margin: 0; font-size: 16px; line-height: 1.6; color: #fff; }
+.wl-rule b { color: var(--orange-hi); }
+.wl-foot { max-width: 980px; margin: 30px auto 0; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+.wl-foot a { color: var(--orange-hi); }

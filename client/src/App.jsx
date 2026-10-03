@@ -16,6 +16,7 @@ import Attendance from "./pages/admin/Attendance.jsx";
 import Admins from "./pages/admin/Admins.jsx";
 import Join from "./pages/public/Join.jsx";
 import Ai from "./pages/admin/Ai.jsx";
+import AiWorklog from "./pages/public/AiWorklog.jsx";
 import { DialogHost } from "./components/Dialog.jsx";
 
 function Protected({ children }) {
@@ -30,6 +31,7 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/r/:code" element={<Landing />} />
       <Route path="/j/:token" element={<Join />} />
+      <Route path="/aiworklog" element={<AiWorklog />} />
       <Route path="/admin/login" element={<Login />} />
       <Route
         path="/admin"
