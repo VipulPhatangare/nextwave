@@ -34,7 +34,7 @@ router.post(
       return res.status(401).json({ error: "Wrong email or password." });
     }
     const token = sign(admin);
-    res.cookie("token", token, { httpOnly: true, sameSite: "lax", maxAge: 7 * 864e5 });
+    res.cookie("token", token, { httpOnly: true, sameSite: "lax", secure: req.secure, maxAge: 7 * 864e5 });
     res.json({ token, user: { email: admin.email, name: admin.name, role: admin.role } });
   })
 );
